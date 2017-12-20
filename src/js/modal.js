@@ -1,30 +1,49 @@
 import { createElement, htmlToElement } from './utils';
 
 function createModalElements(content) {
-    let contentClone = null;
 
-    if (content instanceof Node) {
-        // Clone original modal markup
-        contentClone = content.cloneNode(true);
-    } else {
-        contentClone = htmlToElement(content);
+    if (content instanceof Node !== true) { // TODO: Don't clone, as this may break IDs and form elements for example
+        content = htmlToElement(content);
     }
-    contentClone.removeAttribute('style');
 
     const wrapper = createElement('div', { class: 'modal-container' });
     const overlay = createElement('div', { class: 'modal-overlay' });
     const modalContent = createElement('div', { class: 'modal-content' });
+	const modalClose = createElement('button', { class: 'modal-close' }, 'Close');
 
-    modalContent.appendChild(contentClone);
+	modalContent.appendChild(content);
+	content.removeAttribute('style');
     wrapper.appendChild(overlay);
+    wrapper.appendChild(modalClose);
     wrapper.appendChild(modalContent);
 
     return wrapper;
 }
 
-function insertModal(modal) {
-    modal.classList.add('open');
-    document.body.appendChild(modal);
+function showModal(modalEl) {
+	modalEl.classList.add('open');
+}
+
+function insertModal(modalEl) {
+    showModal(modalEl);
+    document.body.appendChild(modalEl);
+}
+
+function closeButtonClicked(evt) {
+	this.close();
+}
+
+function keyPressed(evt) {
+	if ((evt.keyCode || evt.which) === 27) {
+		modal.close();
+	}
+}
+
+function attachEvents(modal) {
+	const modalClose = modal.modal.querySelector('.modal-close');
+
+	modalClose.addEventListener('click', modal.onCloseButtonClicked);
+	window.addEventListener('keyup', modal.keyPressed);
 }
 
 export default function Modal(options = {}) {
@@ -36,17 +55,27 @@ export default function Modal(options = {}) {
 
     this.state = 'closed';
     this.content = options.content;
-    this.modal = createModalElements(this.content);
+	this.modal = createModalElements(this.content);
+	this.onCloseButtonClicked = closeButtonClicked.bind(this);
+	this.onKeyPressed = keyPressed.bind(this);
 }
 
 Modal.prototype.open = function() {
-    if (this.state !== 'open') { // Prevent unnecessarily inserting to DOM
+	if (this.state !== 'open') { // Prevent unnecessarily inserting to DOM
+
+		// TODO: Transition
+
         this.state = 'open';
-        insertModal(this.modal);
+		insertModal(this.modal);
+        attachEvents(this);
+		showModal(this.modal);
     }
 }
 
 Modal.prototype.close = function() {
-    this.state = 'closed';
-    this.modal.classList.remove('open');
+	this.state = 'closed';
+
+	// TODO: Transition and delete
+
+	this.modal.classList.remove('open');
 }

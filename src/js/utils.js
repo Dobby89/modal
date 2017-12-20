@@ -13,7 +13,8 @@ export function createElement(name, attributes, content) {
 }
 
 /**
- * Create a DOM element from a string
+ * Create a DOM element from a string without
+ * having to append to a containing <div>
  *
  * @param {String} HTML representing a single element e.g. `<div><span>Hello World</span></div>`
  * @return {Element}
