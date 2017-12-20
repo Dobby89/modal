@@ -1,28 +1,25 @@
-# EditorConfig is awesome: http://EditorConfig.org
-
 # top-most EditorConfig file
 root = true
 
 # Unix-style newlines with a newline ending every file
 [*]
+indent_style = tab
+indent_size = tab
+tab_width = 4
 end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace =  true
 insert_final_newline = true
 
-# Matches multiple files with brace expansion notation
-# Set default charset
-[*.{js}]
-charset = utf-8
-
-# Tab indentation (no size specified)
-[Makefile]
-indent_style = tab
-
-# Indentation override for all JS under lib directory
-[lib/**.js]
+[{package.json,.eslintrc}]
+quote_type = double
 indent_style = space
 indent_size = 2
 
-# Matches the exact files either package.json or .travis.yml
-[{package.json,.travis.yml}]
-indent_style = space
-indent_size = 2
+[*.{js,jsx,ts}]
+quote_type = single
+curly_bracket_next_line = false
+spaces_around_operators = true
+spaces_around_brackets = none
+indent_brace_style = K&R
+continuation_indent_size = 1
