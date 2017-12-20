@@ -1,10 +1,23 @@
-import { createElement } from './utils';
+import { createElement, htmlToElement } from './utils';
 
 function createModalElements(content) {
-    const wrapper = createElement('div', { class: 'modal-container' });
-    wrapper.appendChild(content);
+    let contentClone = null;
 
-    content.removeAttribute('style');
+    if (content instanceof Node) {
+        // Clone original modal markup
+        contentClone = content.cloneNode(true);
+    } else {
+        contentClone = htmlToElement(content);
+    }
+    contentClone.removeAttribute('style');
+
+    const wrapper = createElement('div', { class: 'modal-container' });
+    const overlay = createElement('div', { class: 'modal-overlay' });
+    const modalContent = createElement('div', { class: 'modal-content' });
+
+    modalContent.appendChild(contentClone);
+    wrapper.appendChild(overlay);
+    wrapper.appendChild(modalContent);
 
     return wrapper;
 }
