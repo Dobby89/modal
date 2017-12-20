@@ -14,6 +14,7 @@ $ npm start
 
 ## TODO
 
+* ~~Add markup to DOM~~
 * ~~`open()` method~~
 * `close()` method
 * Close on _Esc_ key.
