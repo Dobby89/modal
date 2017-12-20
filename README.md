@@ -16,4 +16,7 @@ $ npm start
 
 * ~~`open()` method~~
 * `close()` method
-* ...
+* Close on _Esc_ key.
+* Basic styling
+* Transitons
+* Callbacks / Event emitters
