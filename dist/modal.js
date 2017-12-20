@@ -70,6 +70,50 @@
 "use strict";
 
 
+var _helpers = __webpack_require__(1);
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+__webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+console.log('robin');
+
+var foo = function foo() {
+  return console.log('mike');
+};
+foo();
+
+console.log(new _helpers2.default());
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Helpers = function Helpers() {
+    _classCallCheck(this, Helpers);
+
+    this.isHelpful = true;
+};
+
+exports.default = Helpers;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
 /***/ })
 /******/ ]);
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=modal.js.map

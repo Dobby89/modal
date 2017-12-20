@@ -2,10 +2,10 @@ const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: './src/js/main.js',
+  entry: './src/entry.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: 'modal.js'
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
