@@ -1,23 +1,26 @@
-import { createElement, htmlToElement } from './utils';
+import { createElement, htmlToFragment } from './utils';
 
 function createModalElements(content) {
 
-    if (content instanceof Node !== true) { // TODO: Don't clone, as this may break IDs and form elements for example
-        content = htmlToElement(content);
-    }
+	if (typeof content === 'string') {
+		content = htmlToFragment(content);
+	}
 
-    const wrapper = createElement('div', { class: 'modal-container' });
-    const overlay = createElement('div', { class: 'modal-overlay' });
-    const modalContent = createElement('div', { class: 'modal-content' });
+	const wrapper = createElement('div', { class: 'modal-container' });
+	const overlay = createElement('div', { class: 'modal-overlay' });
+	const modalContent = createElement('div', { class: 'modal-content' });
 	const modalClose = createElement('button', { class: 'modal-close' }, 'Close');
 
-	modalContent.appendChild(content);
-	content.removeAttribute('style');
-    wrapper.appendChild(overlay);
-    wrapper.appendChild(modalClose);
-    wrapper.appendChild(modalContent);
+	if (content.removeAttribute) {
+		content.removeAttribute('style');
+	}
 
-    return wrapper;
+	modalContent.appendChild(content);
+	wrapper.appendChild(overlay);
+	wrapper.appendChild(modalClose);
+	wrapper.appendChild(modalContent);
+
+	return wrapper;
 }
 
 function showModal(modalEl) {
@@ -25,8 +28,7 @@ function showModal(modalEl) {
 }
 
 function insertModal(modalEl) {
-    showModal(modalEl);
-    document.body.appendChild(modalEl);
+	document.body.appendChild(modalEl);
 }
 
 function closeButtonClicked(evt) {
@@ -35,7 +37,7 @@ function closeButtonClicked(evt) {
 
 function keyPressed(evt) {
 	if ((evt.keyCode || evt.which) === 27) {
-		modal.close();
+		this.close();
 	}
 }
 
@@ -43,18 +45,18 @@ function attachEvents(modal) {
 	const modalClose = modal.modal.querySelector('.modal-close');
 
 	modalClose.addEventListener('click', modal.onCloseButtonClicked);
-	window.addEventListener('keyup', modal.keyPressed);
+	window.addEventListener('keyup', modal.onKeyPressed);
 }
 
 export default function Modal(options = {}) {
 
-    if (!options.content) {
-        throw new Error('Modal expects a content property.');
-        return;
-    }
+	if (!options.content) {
+		throw new Error('Modal expects a content property.');
+		return;
+	}
 
-    this.state = 'closed';
-    this.content = options.content;
+	this.state = 'closed';
+	this.content = options.content;
 	this.modal = createModalElements(this.content);
 	this.onCloseButtonClicked = closeButtonClicked.bind(this);
 	this.onKeyPressed = keyPressed.bind(this);
@@ -65,12 +67,12 @@ Modal.prototype.open = function() {
 
 		// TODO: Transition
 
-        this.state = 'open';
+		this.state = 'open';
 		insertModal(this.modal);
-        attachEvents(this);
+		attachEvents(this);
 		showModal(this.modal);
-    }
-}
+	}
+};
 
 Modal.prototype.close = function() {
 	this.state = 'closed';
@@ -78,4 +80,4 @@ Modal.prototype.close = function() {
 	// TODO: Transition and delete
 
 	this.modal.classList.remove('open');
-}
+};

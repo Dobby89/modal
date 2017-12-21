@@ -1,30 +1,42 @@
 export function createElement(name, attributes, content) {
-    const el = document.createElement(name);
+	const el = document.createElement(name);
 
-    Object.keys(attributes).forEach(attr => {
-        el.setAttribute(attr, attributes[attr]);
-    });
+	Object.keys(attributes).forEach(attr => {
+		el.setAttribute(attr, attributes[attr]);
+	});
 
-    if (content) {
-        el.innerHTML = content;
-    }
+	if (content) {
+		el.innerHTML = content;
+	}
 
-    return el;
+	return el;
 }
 
 /**
  * Create a DOM element from a string without
  * having to append to a containing <div>
  *
- * @param {String} HTML representing a single element e.g. `<div><span>Hello World</span></div>`
+ * @param {String} e.g. `<div><span>Hello World</span></div> Foo bar`
  * @return {Element}
  */
-export function htmlToElement(htmlString) {
-    const wrapper = createElement('div', {}, htmlString);
-    document.body.appendChild(wrapper);
-    const el = wrapper.firstChild;
-    const elClone = el.cloneNode(true);
-    el.parentNode.removeChild(el);
+export function htmlToFragment(htmlString) {
+	const fragment = document.createDocumentFragment();
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = htmlString;
 
-    return elClone;
-};
+	Array.from(wrapper.childNodes).forEach(child => fragment.appendChild(child));
+
+	return fragment;
+}
+
+
+// export function htmlToElement(htmlString) {
+// 	const hostElement = document.createElement('div');
+// 	let element = null;
+// 	hostElement.innerHTML = htmlString;
+// 	document.body.appendChild(hostElement);
+// 	element = hostElement.firstChild; // Grab the markup we've generated
+// 	hostElement.parentNode.removeChild(hostElement); // Tidy up after ourselves
+
+// 	return element;
+// }
