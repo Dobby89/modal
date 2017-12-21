@@ -23,6 +23,10 @@ function createModalElements(content) {
 	return wrapper;
 }
 
+function overlayClicked(evt) {
+	this.close();
+}
+
 function closeButtonClicked(evt) {
 	this.close();
 }
@@ -36,7 +40,9 @@ function keyPressed(evt) {
 
 function attachEvents(modal) {
 	const modalClose = modal.modal.querySelector('.modal-close');
+	const modalOverlay = modal.modal.querySelector('.modal-overlay');
 
+	modalOverlay.addEventListener('click', modal.onOverlayClicked);
 	modalClose.addEventListener('click', modal.onCloseButtonClicked);
 	window.addEventListener('keyup', modal.onKeyPressed);
 }
@@ -51,6 +57,7 @@ export default function Modal(options = {}) {
 	this.state = 'closed';
 	this.content = options.content;
 	this.modal = createModalElements(this.content);
+	this.onOverlayClicked = overlayClicked.bind(this);
 	this.onCloseButtonClicked = closeButtonClicked.bind(this);
 	this.onKeyPressed = keyPressed.bind(this);
 }
