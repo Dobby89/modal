@@ -1,8 +1,20 @@
 .modal-container {
-	display: none;
+	position: relative;
+	z-index: 99;
+	opacity: 0;
 
 	&.open {
-		display: block;
+		opacity: 1;
+	}
+
+	&.opening {
+		transition: opacity 200ms ease-in;
+		opacity: 1;
+	}
+
+	&.closing {
+		transition: opacity 200ms ease-out;
+		opacity: 0;
 	}
 
 	.modal-overlay {
@@ -11,7 +23,7 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		z-index: 98;
+		z-index: 1;
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.5);
 	}
@@ -19,6 +31,6 @@
 	.modal-content,
 	.modal-close {
 		position: relative;
-		z-index: 99;
+		z-index: 2;
 	}
 }

@@ -23,14 +23,6 @@ function createModalElements(content) {
 	return wrapper;
 }
 
-function showModal(modalEl) {
-	modalEl.classList.add('open');
-}
-
-function insertModal(modalEl) {
-	document.body.appendChild(modalEl);
-}
-
 function closeButtonClicked(evt) {
 	this.close();
 }
@@ -66,19 +58,34 @@ export default function Modal(options = {}) {
 Modal.prototype.open = function() {
 	if (this.state !== 'open') { // Prevent unnecessarily inserting to DOM
 
-		// TODO: Transition
-
-		this.state = 'open';
-		insertModal(this.modal);
+		// Transition open
+		this.state = 'opening';
+		document.body.appendChild(this.modal);
 		attachEvents(this);
-		showModal(this.modal);
+
+		setTimeout(() => {
+			// Slight delay before adding class so opacity has chance to transition
+			this.modal.classList.add('opening');
+		}, 1);
+
+		setTimeout(() => {
+			this.state = 'open';
+			this.modal.classList.remove('opening');
+			this.modal.classList.add('open');
+		}, 200);
 	}
 };
 
 Modal.prototype.close = function() {
-	this.state = 'closed';
+	if (this.state !== 'closed') {
+		this.state = 'closing';
 
-	// TODO: Transition and delete
-
-	this.modal.classList.remove('open');
+		// Transition close and remove from DOM
+		this.modal.classList.add('closing');
+		setTimeout(() => {
+			this.state = 'closed';
+			this.modal.classList.remove('open', 'closing');
+			this.modal.parentNode.removeChild(this.modal);
+		}, 200);
+	}
 };
