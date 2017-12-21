@@ -36,6 +36,7 @@ function closeButtonClicked(evt) {
 }
 
 function keyPressed(evt) {
+	// Esc key
 	if ((evt.keyCode || evt.which) === 27) {
 		this.close();
 	}

@@ -6,7 +6,7 @@ const modalOneContent = document.getElementById('modal-one');
 
 // Test that event listeners are kept when an element is moved
 modalOneContent.addEventListener('click', function (evt) {
-	console.log('hover');
+	console.log('click');
 });
 
 const modalOneInstance = new Modal({ content: modalOneContent });
