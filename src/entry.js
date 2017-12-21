@@ -16,7 +16,7 @@ modalOneTrigger.addEventListener('click', function (evt) {
 });
 
 const modalTwoTrigger = document.getElementById('modal-two-trigger');
-const modalTwoInstance = new Modal({ content: `<div>Second Modal</div>` });
+const modalTwoInstance = new Modal({ content: 'Second Modal' });
 modalTwoTrigger.addEventListener('click', function (evt) {
     evt.preventDefault();
     modalTwoInstance.open();

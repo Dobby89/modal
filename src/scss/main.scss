@@ -1,6 +1,23 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+}
+
 .modal-container {
-	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 	z-index: 99;
+	z-index: 1;
+	height: 100%;
 	opacity: 0;
 
 	&.open {
@@ -18,19 +35,30 @@
 	}
 
 	.modal-overlay {
-		position: fixed;
+		position: absolute;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
 		z-index: 1;
 		height: 100%;
-		background-color: rgba(0, 0, 0, 0.5);
+		background-color: rgba(0, 0, 0, 0.7);
 	}
 
 	.modal-content,
 	.modal-close {
 		position: relative;
 		z-index: 2;
+	}
+
+	.modal-content {
+		padding: 20px;
+		background: #ffffff;
+	}
+
+	.modal-close {
+		position: absolute;
+		top: 0;
+		right: 0;
 	}
 }
