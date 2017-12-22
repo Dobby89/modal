@@ -32,10 +32,11 @@ function closeButtonClicked(evt) {
 }
 
 function keyPressed(evt) {
-	// Esc key
-	if ((evt.keyCode || evt.which) === 27) {
-		this.close();
+	// Check Esc key has been pressed
+	if (typeof evt.keyCode !== 'undefined' && evt.keyCode && evt.keyCode !== 27) {
+		return;
 	}
+	this.close();
 }
 
 function attachEvents(modal) {
