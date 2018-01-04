@@ -2,12 +2,14 @@
 
 ## Getting Started
 
+### Yarn
 ```
-// Yarn
 $ yarn
 $ yarn start
+```
 
-// NPM
+### NPM
+```
 $ npm install
 $ npm start
 ```
@@ -15,10 +17,10 @@ $ npm start
 ## TODO
 
 * ~~Add markup to DOM~~
-* Methods
+* ~~Methods~~
   * ~~`open()`~~
-  * `close()`
-* Close on _Esc_ key.
+  * ~~`close()`~~
+* ~~Close on _Esc_ key~~
 * Basic styling
-* Transitons
+* ~~Transitons~~
 * Callbacks / Event emitters
