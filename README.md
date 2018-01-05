@@ -24,3 +24,4 @@ $ npm start
 * Basic styling
 * ~~Transitons~~
 * ~~Callbacks / Event emitters~~
+* Accessibility
