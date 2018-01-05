@@ -88,7 +88,8 @@ function dispatchEventHook(event, eventProps = {}) {
 }
 
 Modal.prototype.open = function() {
-	if (this.state !== stateString.open) { // Prevent unnecessarily inserting to DOM
+	// Prevent unnecessarily inserting to DOM
+	if (this.state !== stateString.open) {
 
 		// Transition open
 		this.state = stateString.opening;
@@ -111,6 +112,7 @@ Modal.prototype.open = function() {
 };
 
 Modal.prototype.close = function() {
+	// Only attempt to close if not closed
 	if (this.state !== stateString.closed) {
 		this.state = stateString.closing;
 		dispatchEventHook(onClosing, { id: this.id, parent: this.modal });
