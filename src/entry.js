@@ -10,6 +10,22 @@ modalOneContent.addEventListener('click', function (evt) {
 });
 
 const modalOneInstance = new Modal({ content: modalOneContent });
+document.addEventListener('onOpening', (evt) => {
+	console.log('onOpening');
+	console.log(evt);
+});
+document.addEventListener('onOpen', (evt) => {
+	console.log('onOpen');
+	console.log(evt);
+});
+document.addEventListener('onClosing', (evt) => {
+	console.log('onClosing');
+	console.log(evt);
+});
+document.addEventListener('onClosed', (evt) => {
+	console.log('onClosed');
+	console.log(evt);
+});
 modalOneTrigger.addEventListener('click', function (evt) {
     evt.preventDefault();
     modalOneInstance.open();

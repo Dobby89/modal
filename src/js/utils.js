@@ -29,14 +29,27 @@ export function htmlToFragment(htmlString) {
 	return fragment;
 }
 
+/**
+ * Generate an incremental unique ID
+ * Dirty but worky
+ */
+let uid = 0;
+export function uniqueId() {
+	uid = uid + 1;
+	return uid;
+}
 
-// export function htmlToElement(htmlString) {
-// 	const hostElement = document.createElement('div');
-// 	let element = null;
-// 	hostElement.innerHTML = htmlString;
-// 	document.body.appendChild(hostElement);
-// 	element = hostElement.firstChild; // Grab the markup we've generated
-// 	hostElement.parentNode.removeChild(hostElement); // Tidy up after ourselves
-
-// 	return element;
-// }
+/**
+ * Create a custom event
+ *
+ * @param {String} eventString
+ */
+export function createEvent(eventString) {
+	if (document.createEvent) {
+		// Fallback for browsers which don't have Event constructor
+		const event = document.createEvent('CustomEvent');
+		event.initEvent(eventString, true, true);
+		return event;
+	}
+	return new Event(eventString);
+}
