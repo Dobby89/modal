@@ -23,4 +23,4 @@ $ npm start
 * ~~Close on _Esc_ key~~
 * Basic styling
 * ~~Transitons~~
-* Callbacks / Event emitters
+* ~~Callbacks / Event emitters~~
