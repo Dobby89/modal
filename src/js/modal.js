@@ -6,10 +6,10 @@ const stateString = {
 	closed: 'closed',
 	closing: 'closing'
 };
-const onOpening = createEvent('onOpening');
-const onOpen = createEvent('onOpen');
-const onClosing = createEvent('onClosing');
-const onClosed = createEvent('onClosed');
+const onOpening = createEvent('modal-opening');
+const onOpen = createEvent('modal-open');
+const onClosing = createEvent('modal-closing');
+const onClosed = createEvent('modal-closed');
 
 function createModalElements(content, uid) {
 
@@ -67,7 +67,7 @@ export default function Modal(options = {}) {
 	}
 
 	this.id = uniqueId();
-	this.state = 'closed';
+	this.state = stateString.closed;
 	this.content = options.content;
 	this.modal = createModalElements(this.content, this.id);
 	this.onOverlayClicked = overlayClicked.bind(this);

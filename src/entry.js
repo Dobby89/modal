@@ -10,20 +10,20 @@ modalOneContent.addEventListener('click', function (evt) {
 });
 
 const modalOneInstance = new Modal({ content: modalOneContent });
-document.addEventListener('onOpening', (evt) => {
-	console.log('onOpening');
+document.addEventListener('modal-opening', (evt) => {
+	console.log('opening');
 	console.log(evt);
 });
-document.addEventListener('onOpen', (evt) => {
-	console.log('onOpen');
+document.addEventListener('modal-open', (evt) => {
+	console.log('open');
 	console.log(evt);
 });
-document.addEventListener('onClosing', (evt) => {
-	console.log('onClosing');
+document.addEventListener('modal-closing', (evt) => {
+	console.log('closing');
 	console.log(evt);
 });
-document.addEventListener('onClosed', (evt) => {
-	console.log('onClosed');
+document.addEventListener('modal-closed', (evt) => {
+	console.log('closed');
 	console.log(evt);
 });
 modalOneTrigger.addEventListener('click', function (evt) {
