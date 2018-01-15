@@ -1,6 +1,11 @@
 import { createElement, createEvent, htmlToElement, uniqueId } from './utils';
 
 const defaults = {
+	classes: {
+		container: 'modal-container',
+		overlay: 'modal-overlay',
+		content: 'modal-content'
+	},
 	closeButton:
 		'<button class="modal-close" aria-label="Close modal">Close</button>'
 };
@@ -15,32 +20,39 @@ const onOpen = createEvent('modal-open');
 const onClosing = createEvent('modal-closing');
 const onClosed = createEvent('modal-closed');
 
-function createModalElements(instance) {
+function createElements(instance) {
 	let { id, content, options } = instance;
+	let { classes } = options;
 
 	if (typeof content === 'string') {
 		content = htmlToElement(content);
 	}
 
-	const wrapper = createElement('div', {
-		class: 'modal-container',
+	const containerEl = createElement('div', {
+		class: classes.container,
 		'data-modal-id': id
 	});
-	const overlay = createElement('div', { class: 'modal-overlay' });
-	const modalContent = createElement('div', { class: 'modal-content' });
-	instance.closeButton = htmlToElement(options.closeButton);
-	// const modalClose = createElement('button', { class: 'modal-close' }, 'Close');
+	const overlayEl = createElement('div', { class: classes.overlay });
+	const contentEl = createElement('div', {
+		class: classes.content
+	});
+	const closeButtonEl = htmlToElement(options.closeButton);
 
 	if (content.removeAttribute) {
 		content.removeAttribute('style');
 	}
 
-	modalContent.appendChild(content);
-	wrapper.appendChild(overlay);
-	wrapper.appendChild(instance.closeButton);
-	wrapper.appendChild(modalContent);
+	contentEl.appendChild(content);
+	containerEl.appendChild(overlayEl);
+	containerEl.appendChild(closeButtonEl);
+	containerEl.appendChild(contentEl);
 
-	return wrapper;
+	return {
+		container: containerEl,
+		overlay: overlayEl,
+		content: contentEl,
+		closeButton: closeButtonEl
+	};
 }
 
 function overlayClicked(evt) {
@@ -48,6 +60,7 @@ function overlayClicked(evt) {
 }
 
 function closeButtonClicked(evt) {
+	// TODO: Check the clicked element has a parent which matches the top level close element
 	this.close();
 }
 
@@ -65,17 +78,14 @@ function keyPressed(evt) {
 
 function attachEvents(instance) {
 	let {
-		modal,
+		overlay,
 		closeButton,
 		onOverlayClicked,
 		onCloseButtonClicked,
 		onKeyPressed
 	} = instance;
 
-	// const modalClose = modal.querySelector('.modal-close');
-	const modalOverlay = modal.querySelector('.modal-overlay');
-
-	modalOverlay.addEventListener('click', onOverlayClicked);
+	overlay.addEventListener('click', onOverlayClicked);
 	closeButton.addEventListener('click', onCloseButtonClicked);
 	window.addEventListener('keyup', onKeyPressed);
 }
@@ -103,10 +113,14 @@ export default function Modal(options = {}) {
 	this.id = uniqueId();
 	this.state = stateString.closed;
 	this.content = options.content;
-	this.modal = createModalElements(this);
 	this.onOverlayClicked = overlayClicked.bind(this);
 	this.onCloseButtonClicked = closeButtonClicked.bind(this);
 	this.onKeyPressed = keyPressed.bind(this);
+
+	const modalElements = createElements(this);
+	this.container = modalElements.container;
+	this.overlay = modalElements.overlay;
+	this.closeButton = modalElements.closeButton;
 }
 
 Modal.prototype.open = function() {
@@ -114,20 +128,20 @@ Modal.prototype.open = function() {
 	if (this.state !== stateString.open) {
 		// Transition open
 		this.state = stateString.opening;
-		document.body.appendChild(this.modal);
+		document.body.appendChild(this.container);
 		attachEvents(this);
-		dispatchEventHook(onOpening, { id: this.id, parent: this.modal });
+		dispatchEventHook(onOpening, { id: this.id, parent: this.container });
 
 		setTimeout(() => {
 			// Slight delay before adding class so opacity has chance to transition
-			this.modal.classList.add(stateString.opening);
+			this.container.classList.add(stateString.opening);
 		}, 1);
 
 		setTimeout(() => {
 			this.state = stateString.open;
-			this.modal.classList.remove(stateString.opening);
-			this.modal.classList.add(stateString.open);
-			dispatchEventHook(onOpen, { id: this.id, parent: this.modal });
+			this.container.classList.remove(stateString.opening);
+			this.container.classList.add(stateString.open);
+			dispatchEventHook(onOpen, { id: this.id, parent: this.container });
 		}, 200);
 	}
 };
@@ -136,15 +150,15 @@ Modal.prototype.close = function() {
 	// Only attempt to close if not closed
 	if (this.state !== stateString.closed) {
 		this.state = stateString.closing;
-		dispatchEventHook(onClosing, { id: this.id, parent: this.modal });
+		dispatchEventHook(onClosing, { id: this.id, parent: this.container });
 
 		// Transition close and remove from DOM
-		this.modal.classList.add(stateString.closing);
+		this.container.classList.add(stateString.closing);
 		setTimeout(() => {
 			this.state = stateString.closed;
-			this.modal.classList.remove(stateString.open, stateString.closing);
-			this.modal.parentNode.removeChild(this.modal);
-			dispatchEventHook(onClosed, { id: this.id, parent: this.modal });
+			this.container.classList.remove(stateString.open, stateString.closing);
+			this.container.parentNode.removeChild(this.container);
+			dispatchEventHook(onClosed, { id: this.id, parent: this.container });
 		}, 200);
 	}
 };
