@@ -6,8 +6,7 @@ const defaults = {
 		overlay: 'modal-overlay',
 		content: 'modal-content'
 	},
-	closeButton:
-		'<button class="modal-close" aria-label="Close modal">Close</button>'
+	closeButton: '<button class="modal-close" aria-label="Close modal">Close</button>'
 };
 const stateString = {
 	open: 'open',
