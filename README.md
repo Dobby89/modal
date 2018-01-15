@@ -25,3 +25,4 @@ $ npm start
 * ~~Transitons~~
 * ~~Callbacks / Event emitters~~
 * Accessibility
+* Multi-lingual

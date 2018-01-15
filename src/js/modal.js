@@ -1,5 +1,9 @@
-import { createElement, createEvent, htmlToFragment, uniqueId } from './utils';
+import { createElement, createEvent, htmlToElement, uniqueId } from './utils';
 
+const defaults = {
+	closeButton:
+		'<button class="modal-close" aria-label="Close modal">Close</button>'
+};
 const stateString = {
 	open: 'open',
 	opening: 'opening',
@@ -11,16 +15,21 @@ const onOpen = createEvent('modal-open');
 const onClosing = createEvent('modal-closing');
 const onClosed = createEvent('modal-closed');
 
-function createModalElements(content, uid) {
+function createModalElements(instance) {
+	let { id, content, options } = instance;
 
 	if (typeof content === 'string') {
-		content = htmlToFragment(content);
+		content = htmlToElement(content);
 	}
 
-	const wrapper = createElement('div', { class: 'modal-container', 'data-modal-id': uid });
+	const wrapper = createElement('div', {
+		class: 'modal-container',
+		'data-modal-id': id
+	});
 	const overlay = createElement('div', { class: 'modal-overlay' });
 	const modalContent = createElement('div', { class: 'modal-content' });
-	const modalClose = createElement('button', { class: 'modal-close' }, 'Close');
+	instance.closeButton = htmlToElement(options.closeButton);
+	// const modalClose = createElement('button', { class: 'modal-close' }, 'Close');
 
 	if (content.removeAttribute) {
 		content.removeAttribute('style');
@@ -28,7 +37,7 @@ function createModalElements(content, uid) {
 
 	modalContent.appendChild(content);
 	wrapper.appendChild(overlay);
-	wrapper.appendChild(modalClose);
+	wrapper.appendChild(instance.closeButton);
 	wrapper.appendChild(modalContent);
 
 	return wrapper;
@@ -44,35 +53,31 @@ function closeButtonClicked(evt) {
 
 function keyPressed(evt) {
 	// Check Esc key has been pressed
-	if (typeof evt.keyCode !== 'undefined' && evt.keyCode && evt.keyCode !== 27) {
+	if (
+		typeof evt.keyCode !== 'undefined' &&
+		evt.keyCode &&
+		evt.keyCode !== 27
+	) {
 		return;
 	}
 	this.close();
 }
 
-function attachEvents(modal) {
-	const modalClose = modal._modal.querySelector('.modal-close');
-	const modalOverlay = modal._modal.querySelector('.modal-overlay');
+function attachEvents(instance) {
+	let {
+		modal,
+		closeButton,
+		onOverlayClicked,
+		onCloseButtonClicked,
+		onKeyPressed
+	} = instance;
 
-	modalOverlay.addEventListener('click', modal._onOverlayClicked);
-	modalClose.addEventListener('click', modal._onCloseButtonClicked);
-	window.addEventListener('keyup', modal._onKeyPressed);
-}
+	// const modalClose = modal.querySelector('.modal-close');
+	const modalOverlay = modal.querySelector('.modal-overlay');
 
-export default function Modal(options = {}) {
-
-	if (!options.content) {
-		throw new Error('Modal expects a content property.');
-		return;
-	}
-
-	this._id = uniqueId();
-	this._state = stateString.closed;
-	this._content = options.content;
-	this._modal = createModalElements(this._content, this._id);
-	this._onOverlayClicked = overlayClicked.bind(this);
-	this._onCloseButtonClicked = closeButtonClicked.bind(this);
-	this._onKeyPressed = keyPressed.bind(this);
+	modalOverlay.addEventListener('click', onOverlayClicked);
+	closeButton.addEventListener('click', onCloseButtonClicked);
+	window.addEventListener('keyup', onKeyPressed);
 }
 
 function dispatchEventHook(event, eventProps = {}) {
@@ -87,43 +92,59 @@ function dispatchEventHook(event, eventProps = {}) {
 	document.dispatchEvent(event);
 }
 
+export default function Modal(options = {}) {
+	if (!options.content) {
+		throw new Error('Modal expects a content property.');
+		return;
+	}
+
+	this.options = Object.assign({}, defaults, options);
+
+	this.id = uniqueId();
+	this.state = stateString.closed;
+	this.content = options.content;
+	this.modal = createModalElements(this);
+	this.onOverlayClicked = overlayClicked.bind(this);
+	this.onCloseButtonClicked = closeButtonClicked.bind(this);
+	this.onKeyPressed = keyPressed.bind(this);
+}
+
 Modal.prototype.open = function() {
 	// Prevent unnecessarily inserting to DOM
-	if (this._state !== stateString.open) {
-
+	if (this.state !== stateString.open) {
 		// Transition open
-		this._state = stateString.opening;
-		document.body.appendChild(this._modal);
+		this.state = stateString.opening;
+		document.body.appendChild(this.modal);
 		attachEvents(this);
-		dispatchEventHook(onOpening, { id: this._id, parent: this._modal });
+		dispatchEventHook(onOpening, { id: this.id, parent: this.modal });
 
 		setTimeout(() => {
 			// Slight delay before adding class so opacity has chance to transition
-			this._modal.classList.add(stateString.opening);
+			this.modal.classList.add(stateString.opening);
 		}, 1);
 
 		setTimeout(() => {
-			this._state = stateString.open;
-			this._modal.classList.remove(stateString.opening);
-			this._modal.classList.add(stateString.open);
-			dispatchEventHook(onOpen, { id: this._id, parent: this._modal });
+			this.state = stateString.open;
+			this.modal.classList.remove(stateString.opening);
+			this.modal.classList.add(stateString.open);
+			dispatchEventHook(onOpen, { id: this.id, parent: this.modal });
 		}, 200);
 	}
 };
 
 Modal.prototype.close = function() {
 	// Only attempt to close if not closed
-	if (this._state !== stateString.closed) {
-		this._state = stateString.closing;
-		dispatchEventHook(onClosing, { id: this._id, parent: this._modal });
+	if (this.state !== stateString.closed) {
+		this.state = stateString.closing;
+		dispatchEventHook(onClosing, { id: this.id, parent: this.modal });
 
 		// Transition close and remove from DOM
-		this._modal.classList.add(stateString.closing);
+		this.modal.classList.add(stateString.closing);
 		setTimeout(() => {
-			this._state = stateString.closed;
-			this._modal.classList.remove(stateString.open, stateString.closing);
-			this._modal.parentNode.removeChild(this._modal);
-			dispatchEventHook(onClosed, { id: this._id, parent: this._modal });
+			this.state = stateString.closed;
+			this.modal.classList.remove(stateString.open, stateString.closing);
+			this.modal.parentNode.removeChild(this.modal);
+			dispatchEventHook(onClosed, { id: this.id, parent: this.modal });
 		}, 200);
 	}
 };

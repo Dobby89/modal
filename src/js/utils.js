@@ -13,7 +13,7 @@ export function createElement(name, attributes, content) {
 }
 
 /**
- * Create a DOM element from a string without
+ * Create a DOM fragment from a string without
  * having to append to a containing <div>
  *
  * @param {String} e.g. `<div><span>Hello World</span></div> Foo bar`
@@ -27,6 +27,23 @@ export function htmlToFragment(htmlString) {
 	Array.from(wrapper.childNodes).forEach(child => fragment.appendChild(child));
 
 	return fragment;
+}
+
+/**
+ * Create a DOM element from a string
+ *
+ * @param {String} e.g. `<div><span>Hello World</span></div>`
+ * @return {Element}
+ */
+export function htmlToElement(htmlString) {
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = htmlString;
+	document.body.appendChild(wrapper);
+	const el = wrapper.firstChild;
+	const elClone = el.cloneNode(true);
+	el.parentNode.removeChild(el);
+
+	return elClone;
 }
 
 /**
