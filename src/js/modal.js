@@ -75,20 +75,6 @@ function keyPressed(evt) {
 	this.close();
 }
 
-function attachEvents(instance) {
-	let {
-		overlay,
-		closeButton,
-		onOverlayClicked,
-		onCloseButtonClicked,
-		onKeyPressed
-	} = instance;
-
-	overlay.addEventListener('click', onOverlayClicked);
-	closeButton.addEventListener('click', onCloseButtonClicked);
-	window.addEventListener('keyup', onKeyPressed);
-}
-
 function dispatchLifecycleHook(event, eventProps = {}) {
 	if (eventProps) {
 		// Assign any custom props to the event before dispatching
@@ -112,9 +98,6 @@ export default function Modal(options = {}) {
 	this.id = uniqueId();
 	this.state = stateString.closed;
 	this.content = options.content;
-	this.onOverlayClicked = overlayClicked.bind(this);
-	this.onCloseButtonClicked = closeButtonClicked.bind(this);
-	this.onKeyPressed = keyPressed.bind(this);
 
 	const modalElements = createElements(this);
 	this.container = modalElements.container;
@@ -128,7 +111,12 @@ Modal.prototype.open = function() {
 		// Transition open
 		this.state = stateString.opening;
 		document.body.appendChild(this.container);
-		attachEvents(this);
+
+		// Add event listeners
+		this.overlay.addEventListener('click', overlayClicked.bind(this));
+		this.closeButton.addEventListener('click', closeButtonClicked.bind(this));
+		window.addEventListener('keyup', keyPressed.bind(this));
+
 		dispatchLifecycleHook(onOpening, { id: this.id, parent: this.container });
 
 		setTimeout(() => {
