@@ -33,9 +33,7 @@ function createElements(instance) {
 		'data-modal-id': id
 	});
 	const overlayEl = createElement('div', { class: classes.overlay });
-	const contentEl = createElement('div', {
-		class: classes.content
-	});
+	const contentEl = createElement('div', { class: classes.content });
 	const closeButtonEl = htmlToElement(options.closeButton);
 
 	if (content.removeAttribute) {
@@ -91,7 +89,7 @@ function attachEvents(instance) {
 	window.addEventListener('keyup', onKeyPressed);
 }
 
-function dispatchEventHook(event, eventProps = {}) {
+function dispatchLifecycleHook(event, eventProps = {}) {
 	if (eventProps) {
 		// Assign any custom props to the event before dispatching
 		for (const key in eventProps) {
@@ -131,7 +129,7 @@ Modal.prototype.open = function() {
 		this.state = stateString.opening;
 		document.body.appendChild(this.container);
 		attachEvents(this);
-		dispatchEventHook(onOpening, { id: this.id, parent: this.container });
+		dispatchLifecycleHook(onOpening, { id: this.id, parent: this.container });
 
 		setTimeout(() => {
 			// Slight delay before adding class so opacity has chance to transition
@@ -142,7 +140,7 @@ Modal.prototype.open = function() {
 			this.state = stateString.open;
 			this.container.classList.remove(stateString.opening);
 			this.container.classList.add(stateString.open);
-			dispatchEventHook(onOpen, { id: this.id, parent: this.container });
+			dispatchLifecycleHook(onOpen, { id: this.id, parent: this.container });
 		}, 200);
 	}
 };
@@ -151,7 +149,7 @@ Modal.prototype.close = function() {
 	// Only attempt to close if not closed
 	if (this.state !== stateString.closed) {
 		this.state = stateString.closing;
-		dispatchEventHook(onClosing, { id: this.id, parent: this.container });
+		dispatchLifecycleHook(onClosing, { id: this.id, parent: this.container });
 
 		// Transition close and remove from DOM
 		this.container.classList.add(stateString.closing);
@@ -159,7 +157,7 @@ Modal.prototype.close = function() {
 			this.state = stateString.closed;
 			this.container.classList.remove(stateString.open, stateString.closing);
 			this.container.parentNode.removeChild(this.container);
-			dispatchEventHook(onClosed, { id: this.id, parent: this.container });
+			dispatchLifecycleHook(onClosed, { id: this.id, parent: this.container });
 		}, 200);
 	}
 };
