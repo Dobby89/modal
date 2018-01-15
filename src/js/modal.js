@@ -56,11 +56,12 @@ function createElements(instance) {
 }
 
 function overlayClicked(evt) {
+	evt.preventDefault();
 	this.close();
 }
 
 function closeButtonClicked(evt) {
-	// TODO: Check the clicked element has a parent which matches the top level close element
+	evt.preventDefault();
 	this.close();
 }
 
