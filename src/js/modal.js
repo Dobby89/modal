@@ -6,7 +6,9 @@ const defaults = {
 		overlay: 'modal-overlay',
 		content: 'modal-content'
 	},
-	closeButton: '<button class="modal-close" aria-label="Close modal">Close</button>'
+	closeButton: '<button class="modal-close" aria-label="Close modal">Close</button>',
+	transitionIn: 200,
+	transitionOut: 200
 };
 const stateString = {
 	open: 'open',
@@ -128,7 +130,7 @@ Modal.prototype.open = function() {
 			this.container.classList.remove(stateString.opening);
 			this.container.classList.add(stateString.open);
 			dispatchLifecycleHook(onOpen, { id: this.id, parent: this.container });
-		}, 200);
+		}, this.options.transitionIn);
 	}
 };
 
@@ -136,15 +138,16 @@ Modal.prototype.close = function() {
 	// Only attempt to close if not closed
 	if (this.state !== stateString.closed) {
 		this.state = stateString.closing;
-		dispatchLifecycleHook(onClosing, { id: this.id, parent: this.container });
 
 		// Transition close and remove from DOM
 		this.container.classList.add(stateString.closing);
+		dispatchLifecycleHook(onClosing, { id: this.id, parent: this.container });
+
 		setTimeout(() => {
 			this.state = stateString.closed;
 			this.container.classList.remove(stateString.open, stateString.closing);
 			this.container.parentNode.removeChild(this.container);
 			dispatchLifecycleHook(onClosed, { id: this.id, parent: this.container });
-		}, 200);
+		}, this.options.transitionOut);
 	}
 };

@@ -34,8 +34,7 @@ modalOneTrigger.addEventListener('click', function(evt) {
 const modalTwoTrigger = document.getElementById('modal-two-trigger');
 const modalTwoInstance = new Modal({
 	content: 'Second Modal',
-	closeButton:
-		'<button class="modal-close" aria-label="Close modal">Custom Close</button>' // Custom close markup
+	closeButton: '<button class="modal-close" aria-label="Close modal">Custom Close</button>', // Custom close markup
 });
 modalTwoTrigger.addEventListener('click', function(evt) {
 	evt.preventDefault();
