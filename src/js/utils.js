@@ -41,7 +41,7 @@ export function htmlToElement(htmlString) {
 	document.body.appendChild(wrapper);
 	const el = wrapper.firstChild;
 	const elClone = el.cloneNode(true);
-	el.parentNode.removeChild(el);
+	wrapper.parentNode.removeChild(wrapper);
 
 	return elClone;
 }
