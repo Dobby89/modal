@@ -104,10 +104,10 @@ export default function Modal(options = {}) {
 	this.state = stateString.closed;
 	this.content = options.content;
 
-	const modalElements = createElements(this);
-	this.container = modalElements.container;
-	this.overlay = modalElements.overlay;
-	this.closeButton = modalElements.closeButton;
+	const { container, overlay, closeButton } = createElements(this);
+	this.container = container;
+	this.overlay = overlay;
+	this.closeButton = closeButton;
 }
 
 Modal.prototype.open = function() {
