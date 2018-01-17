@@ -26,3 +26,4 @@ $ npm start
 * ~~Callbacks / Event emitters~~
 * Accessibility
 * Multi-lingual
+* Check browser for transition support
