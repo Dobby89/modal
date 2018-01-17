@@ -109,7 +109,6 @@ export default function Modal(options = {}) {
 Modal.prototype.open = function() {
 	// Prevent unnecessarily inserting to DOM
 	if (this.state !== stateString.open) {
-		// Transition open
 		this.state = stateString.opening;
 		document.body.appendChild(this.container);
 
@@ -126,6 +125,7 @@ Modal.prototype.open = function() {
 		}, 1);
 
 		setTimeout(() => {
+			// Transition open
 			this.state = stateString.open;
 			this.container.classList.remove(stateString.opening);
 			this.container.classList.add(stateString.open);
