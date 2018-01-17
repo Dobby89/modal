@@ -89,9 +89,13 @@ function dispatchLifecycleHook(event, eventProps = {}) {
 }
 
 export default function Modal(options = {}) {
+	if (!(this instanceof Modal)) {
+		return new Modal(options);
+	}
+
 	if (!options.content) {
 		throw new Error('Modal expects a content property.');
-		return;
+		return false;
 	}
 
 	this.options = Object.assign({}, defaults, options);

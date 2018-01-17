@@ -27,3 +27,4 @@ $ npm start
 * Accessibility
 * Multi-lingual
 * Check browser for transition support
+* Listen for transition end event instead of setTimeout
